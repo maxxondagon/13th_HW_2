@@ -1,50 +1,34 @@
 //
-//  StandartTableViewCell.swift
-//  13hw-scratch
+//  UserInfoTableViewCell.swift
+//  13th-HW
 //
-//  Created by Максим Солобоев on 26.10.2022.
+//  Created by Максим Солобоев on 27.10.2022.
 //
 
 import UIKit
 import SnapKit
 
-class StandartTableViewCell: UITableViewCell {
+class UserInfoViewCell: UITableViewCell {
     
-    static let indentifier = "standartTableViewCell"
+    static let indentifier = "userInfoTableViewCell"
     
-    // MARK: - Data
-    
-    private var cellData: CellData?
-    
-    func fillData(from instance: CellData) {
-        self.cellData = instance
-        icon.image = cellData?.icon
-        mainLabel.text = cellData?.title
-        detailLabel.text = cellData?.detailText
-        iconView.backgroundColor = cellData?.imageBackgroundColor
-        icon.tintColor = cellData?.iconTintColor
-    }
-    
-    // MARK: - Outlets
+    // MARK: - Elements
     
     private lazy var mainLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var detailLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .systemGray3
-        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .systemGray2
         return label
     }()
     
     private lazy var iconView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 6
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
@@ -52,8 +36,6 @@ class StandartTableViewCell: UITableViewCell {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         view.clipsToBounds = true
-        view.tintColor = .red
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
@@ -71,33 +53,44 @@ class StandartTableViewCell: UITableViewCell {
     
     // MARK: - Setup
     
-    func setupHierarcy() {
+   private func setupHierarcy() {
         contentView.addSubview(mainLabel)
         contentView.addSubview(detailLabel)
         contentView.addSubview(iconView)
         iconView.addSubview(icon)
     }
     
-    func setupLayout() {
+    private func setupLayout() {
         iconView.snp.makeConstraints { make in
             make.centerY.equalTo(contentView)
             make.leading.equalTo(contentView).offset(20)
-            make.width.height.equalTo(30)
+            make.width.height.equalTo(70)
         }
         
         icon.snp.makeConstraints { make in
             make.center.equalTo(iconView)
-            make.height.width.equalTo(23)
+            make.height.width.equalTo(70)
         }
         
         mainLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(contentView)
+            make.top.equalTo(contentView).offset(20)
             make.left.equalTo(iconView.snp.right).offset(20)
         }
         
         detailLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(contentView)
-            make.right.equalTo(contentView).inset(15)
+            make.top.equalTo(mainLabel.snp.bottom).offset(10)
+            make.left.equalTo(iconView.snp.right).offset(20)
+            make.right.equalTo(contentView).inset(20)
         }
     }
+    
+    // MARK: - Configuration
+    
+    func configuration(with instance: CellData) {
+        icon.image = instance.icon
+        mainLabel.text = instance.title
+        detailLabel.text = instance.detailText
+        iconView.tintColor = instance.iconTintColor
+    }
 }
+

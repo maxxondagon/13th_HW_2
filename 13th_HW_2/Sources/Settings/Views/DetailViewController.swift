@@ -12,19 +12,7 @@ final class DetailViewController: UIViewController {
     
     // MARK: - Data
     
-    private var cellData: CellData?
-    
-    var getData: CellData? {
-        self.cellData
-    }
-    
-    func fillData(from instance: CellData) {
-        self.cellData = instance
-        icon.image = cellData?.icon
-        detailTitleText.text = cellData?.title
-        iconView.backgroundColor = cellData?.imageBackgroundColor
-        icon.tintColor = cellData?.iconTintColor
-    }
+    private let model: CellData
     
     // MARK: - Outlets
     
@@ -53,14 +41,27 @@ final class DetailViewController: UIViewController {
     
     // MARK: - Lifecycle
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .white
+    init(model: CellData) {
+        self.model = model
+        super.init(nibName: nil, bundle: nil)
+        setupView()
         setupHierarchy()
         setupLayout()
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Setup
+    
+    private func setupView() {
+        view.backgroundColor = .white
+        icon.image = model.icon
+        detailTitleText.text = model.title
+        iconView.backgroundColor = model.imageBackgroundColor
+        icon.tintColor = model.iconTintColor
+    }
     
     private func setupHierarchy() {
         view.addSubview(iconView)

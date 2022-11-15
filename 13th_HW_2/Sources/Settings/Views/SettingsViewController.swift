@@ -12,7 +12,7 @@ class SettingsViewController: UIViewController {
     
     private var cellInstances: [[CellData]] = CellData.getInstances()
     
-    // MARK: - Outlets
+    // MARK: - Elements
     
     private lazy var searcher: UISearchController = {
         let search = UISearchController()
@@ -41,18 +41,18 @@ class SettingsViewController: UIViewController {
     
     // MARK: - Setup
     
-    func setupView() {
+    private func setupView() {
         title = "Настройки"
         navigationController?.navigationBar.prefersLargeTitles = true
         view.backgroundColor = .systemGray6
     }
     
-    func setupHierarcy() {
+    private func setupHierarcy() {
         view.addSubview(tableView)
         navigationItem.searchController = searcher
     }
     
-    func setupLayout() {
+    private func setupLayout() {
         tableView.snp.makeConstraints { make in
             make.top.right.bottom.left.equalTo(view)
         }
@@ -72,27 +72,33 @@ extension SettingsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let standartCell = tableView.dequeueReusableCell(withIdentifier: StandartTableViewCell.indentifier) as? StandartTableViewCell
-        standartCell?.fillData(from: cellInstances[indexPath.section][indexPath.row])
-        standartCell?.accessoryType = .disclosureIndicator
-        
-        let userInfoCell = tableView.dequeueReusableCell(withIdentifier: UserInfoViewCell.indentifier) as? UserInfoViewCell
-        userInfoCell?.fillData(from: cellInstances[indexPath.section][indexPath.row])
-        userInfoCell?.accessoryType = .disclosureIndicator
-        
-        let withSwitchInfoCell = tableView.dequeueReusableCell(withIdentifier: WithSwitchTableViewCell.indentifier) as? WithSwitchTableViewCell
-        withSwitchInfoCell?.fillData(from: cellInstances[indexPath.section][indexPath.row])
-        withSwitchInfoCell?.selectionStyle = .none
-        withSwitchInfoCell?.accessoryType = .none
-        
-        let cellType = cellInstances[indexPath.section][indexPath.row].type
-        switch cellType {
+        let cellModel = cellInstances[indexPath.section][indexPath.row]
+        switch cellModel.type {
         case .userInfo:
-                   return userInfoCell ?? UITableViewCell()
-               case .standart:
-                   return standartCell ?? UITableViewCell()
-               case .withSwitch:
-                   return withSwitchInfoCell ?? UITableViewCell()
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: UserInfoViewCell.indentifier)
+                    as? UserInfoViewCell else {
+                return UITableViewCell()
+            }
+            cell.configuration(with: cellModel)
+            cell.accessoryType = .disclosureIndicator
+            return cell
+        case .standart:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: StandartTableViewCell.indentifier)
+                    as? StandartTableViewCell else {
+                return UITableViewCell()
+            }
+            cell.configuration(with: cellModel)
+            cell.accessoryType = .disclosureIndicator
+            return cell
+        case .withSwitch:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: WithSwitchTableViewCell.indentifier)
+                    as? WithSwitchTableViewCell else {
+                return UITableViewCell()
+            }
+            cell.configuration(with: cellModel)
+            cell.selectionStyle = .none
+            cell.accessoryType = .none
+            return cell
         }
     }
 }
@@ -103,21 +109,18 @@ extension SettingsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let type = cellInstances[indexPath.section][indexPath.row].type
-        if type == .userInfo {
-            return 90
-        }
-        return 45
+        return type == .userInfo ? 90 : 45
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let viewController = DetailViewController()
         tableView.deselectRow(at: indexPath, animated: true)
-        viewController.fillData(from: cellInstances[indexPath.section][indexPath.row])
-        if viewController.getData?.type != .withSwitch {
-            print("Выбран пункт: \(viewController.getData?.title ?? "")")
+        let model = cellInstances[indexPath.section][indexPath.row]
+        if model.type != .withSwitch {
+            let viewController = DetailViewController(model: model)
+            print("Выбран пункт: \(model.title)")
             navigationController?.pushViewController(viewController, animated: true)
         } else {
-            print("Пункт \(viewController.getData?.title ?? "") не имеет DetailView")
+            print("Пункт \(model.title) не имеет DetailView")
         }
     }
 }
