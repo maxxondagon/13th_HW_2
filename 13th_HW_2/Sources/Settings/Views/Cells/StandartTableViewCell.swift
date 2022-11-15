@@ -1,50 +1,34 @@
 //
-//  WithSwitchTableViewCell.swift
-//  13th-HW
+//  StandartTableViewCell.swift
+//  13hw-scratch
 //
-//  Created by Максим Солобоев on 27.10.2022.
+//  Created by Максим Солобоев on 26.10.2022.
 //
 
 import UIKit
 import SnapKit
 
-class WithSwitchTableViewCell: UITableViewCell {
+class StandartTableViewCell: UITableViewCell {
     
-    static let indentifier = "withSwitchTableViewCell"
+    static let indentifier = "standartTableViewCell"
     
-    // MARK: - Data
-    
-    private var cellData: CellData?
-    
-    func fillData(from instance: CellData) {
-        self.cellData = instance
-        icon.image = cellData?.icon
-        mainLabel.text = cellData?.title
-        detailLabel.text = cellData?.detailText
-        iconView.backgroundColor = cellData?.imageBackgroundColor
-        iconView.tintColor = cellData?.iconTintColor
-    }
-    
-    // MARK: - Outlets
+    // MARK: - Elements
     
     private lazy var mainLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var detailLabel: UILabel = {
         let label = UILabel()
         label.textColor = .systemGray3
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var iconView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 6
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
@@ -52,15 +36,7 @@ class WithSwitchTableViewCell: UITableViewCell {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         view.clipsToBounds = true
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()
-    
-    private lazy var cellSwitch: UISwitch = {
-        let cellSwitch = UISwitch()
-        cellSwitch.addTarget(self, action: #selector(changeSwitch), for: .touchUpInside)
-        cellSwitch.translatesAutoresizingMaskIntoConstraints = false
-        return cellSwitch
     }()
     
     // MARK: - Initializer
@@ -77,15 +53,14 @@ class WithSwitchTableViewCell: UITableViewCell {
     
     // MARK: - Setup
     
-    func setupHierarcy() {
+    private func setupHierarcy() {
         contentView.addSubview(mainLabel)
         contentView.addSubview(detailLabel)
-        contentView.addSubview(cellSwitch)
         contentView.addSubview(iconView)
         iconView.addSubview(icon)
     }
     
-    func setupLayout() {
+    private func setupLayout() {
         iconView.snp.makeConstraints { make in
             make.centerY.equalTo(contentView)
             make.leading.equalTo(contentView).offset(20)
@@ -106,18 +81,15 @@ class WithSwitchTableViewCell: UITableViewCell {
             make.centerY.equalTo(contentView)
             make.right.equalTo(contentView).inset(15)
         }
-        cellSwitch.snp.makeConstraints { make in
-            make.centerY.equalTo(contentView)
-            make.right.equalTo(contentView).inset(20)
-        }
     }
     
-    // MARK: - Actions
+    // MARK: - Configuration
     
-    @objc func changeSwitch() {
-        cellSwitch.isOn
-        ? print("\(cellData?.title ?? "") is on")
-        : print("\(cellData?.title ?? "") is off")
+    func configuration(with instance: CellData) {
+        icon.image = instance.icon
+        mainLabel.text = instance.title
+        detailLabel.text = instance.detailText
+        iconView.backgroundColor = instance.imageBackgroundColor
+        icon.tintColor = instance.iconTintColor
     }
 }
-
